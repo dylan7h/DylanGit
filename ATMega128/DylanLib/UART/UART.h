@@ -1,11 +1,11 @@
 ﻿/*
- *	File Name	: UART.h
+ *	File Name	:	UART.h
  *
  *  Created		:	2018-04-14 P.M 1:02:26
  *	belong		:	Korea Polytechnic University
  *					, Department of Energy-Electrical Engineering Student.
  *  Author		:	KOR DYLAN( Korean name: Jun Ki, Hong)
- *	YouTube		:	https://www.youtube.com/channel/UC9DTd1Rv730XKmWRTpqY8Rg?view_as=subscriber
+ *  YouTube		:	https://www.youtube.com/channel/UC9DTd1Rv730XKmWRTpqY8Rg?view_as=subscriber
  *	e-mail		:	dylan.7h@gmail.com
  *  Software	:	Atmel Studio 7
  *	Hardware	:	ATmega128, tested on ATmega128(jmod-128-1) at 16MHz.
@@ -68,10 +68,19 @@ typedef struct UART_HANDLE {
 } hUART;
 
 /*	[ Initialize UART Function ]
-*	>> hKey		: Non Initialized  hUART type Handle variable Address.
-*	>> Channel	: To use UART Channel.
+*	>> hKey			: Non Initialized  hUART type Handle variable Address.
+*	>> Channel		: To use UART Channel.
+*	>> System_Clock	: System Frequency.
+*	>> BaudRate		: Communication Speed.
 */
 uint8_t InitSerial(hUART* hKey, uint8_t Channel, uint32_t System_Clock, uint32_t BaudRate);
+
+/*
+*	[ GetUART_Handle ]
+* - If you have initialized the handle for that channel 
+*	, return the address of the handle for that channel.
+*	>> Channel	: The channel number of the handle address to return.
+*/
 hUART* GetUART_Handle(uint8_t Channel);
 
 /* [ Macro for ease of use ] */

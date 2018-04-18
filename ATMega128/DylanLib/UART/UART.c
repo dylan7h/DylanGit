@@ -1,9 +1,16 @@
 ﻿/*
- * UART.c
+ *	File Name	:	UART.c
  *
- * Created: 2018-04-14 오후 1:02:32
- *  Author: kazam
+ *  Created		:	2018-04-14 P.M 1:02:26
+ *	belong		:	Korea Polytechnic University
+ *					, Department of Energy-Electrical Engineering Student.
+ *  Author		:	KOR DYLAN( Korean name: Jun Ki, Hong)
+ *	YouTube		:	https://www.youtube.com/channel/UC9DTd1Rv730XKmWRTpqY8Rg?view_as=subscriber
+ *	e-mail		:	dylan.7h@gmail.com
+ *  Software	:	Atmel Studio 7
+ *	Hardware	:	ATmega128, tested on ATmega128(jmod-128-1) at 16MHz.
  */ 
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdlib.h>
@@ -33,12 +40,15 @@ static inline uint8_t SerialAvailable(hUART* hKey){ return !(uint8_t)M_IsEmpty(&
 static inline uint8_t SerialWrite(hUART* hKey, uint8_t* Buf, uint8_t Len){
 	register uint8_t idx;
 	
+	// Error Check.
 	if(hKey == NULL) return NULL_KEY;
 	if(Buf == NULL) return NULL_BUF;
 	
+	// Send Data Into Transmit Buffer.
 	for(idx = 0; idx < Len; idx++)
 		M_EnQueue(&hKey->hTx_Buf, Buf[idx]);
 	
+	// Enable data register ready interrupt.
 	switch(hKey->Channel){
 	case 0:
 		UCSR0B |= (1 << UDRIE0);
@@ -54,9 +64,11 @@ static inline uint8_t SerialWrite(hUART* hKey, uint8_t* Buf, uint8_t Len){
 static inline uint8_t SerialRead(hUART* hKey, uint8_t* Buf, uint8_t Size){
 	register uint8_t idx = 0;
 	
+	// Error Check.
 	if(hKey == NULL) return NULL_KEY;
 	if(Buf == NULL) return NULL_BUF;
 	
+	// Receive Data Into User Buf.
 	while(M_DeQueue(&hKey->hRx_Buf, &Buf[idx]) != EMPTY_BUF) {
 		if(++idx >= Size) break;
 	}
@@ -64,31 +76,40 @@ static inline uint8_t SerialRead(hUART* hKey, uint8_t* Buf, uint8_t Size){
 	return idx;
 }
 
+// return Channel of Handle.
 static inline uint8_t WhoAmI(hUART* hKey){
 	return hKey->Channel;
 }
+// return BaudRate of Handle.
 static inline uint32_t GetBaudRate(hUART* hKey){
 	return hKey->BaudRate;
 }
 
+// UART Handle Initialize.
 static inline uint8_t SetUART_Handler(hUART* hKey, uint8_t Channel, uint32_t BaudRate){
-	if(hKey == NULL)
-	return NULL_KEY;
+	// Error Check.
+	if(hKey == NULL) return NULL_KEY;
 	
+	// Set Member variable.
 	hKey->BaudRate = BaudRate;
 	hKey->Channel = Channel;
 	switch(Channel){
 		case 0:
+		// Set static global variable.
 		hSerial0 = hKey;
+		// Initialize Transmit/Receive Queue.
 		InitQueue(&hKey->hRx_Buf, Get_RX0_Buf(), RX0_BUF_SIZE);
 		InitQueue(&hKey->hTx_Buf, Get_TX0_Buf(), TX0_BUF_SIZE);
 		break;
 		case 1:
+		// Set static global variable.
 		hSerial1 = hKey;
+		// Initialize Transmit/Receive Queue.
 		InitQueue(&hKey->hRx_Buf, Get_RX1_Buf(), RX1_BUF_SIZE);
 		InitQueue(&hKey->hTx_Buf, Get_TX1_Buf(), TX1_BUF_SIZE);
 		break;
 	}
+	// Full interrupt permission.
 	sei();
 	
 	return NONE;
@@ -123,6 +144,7 @@ uint8_t InitSerial(hUART* hKey, uint8_t Channel, uint32_t System_Clock, uint32_t
 		return 2;
 	}
 	
+	// Set Member Function.
 	hKey->SerialAvailable = SerialAvailable;
 	hKey->SerialRead = SerialRead;
 	hKey->SerialWrite = SerialWrite;
