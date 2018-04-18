@@ -1,9 +1,16 @@
 ﻿/*
- * DataQueue.c
+ *  File Name   :   DataQueue.c
  *
- * Created: 2018-04-14 오후 1:02:03
- *  Author: kazam
+ *  Created	    :   2018-04-14 오후 1:02:03
+ *  belong      :   Korea Polytechnic University
+ *	                , Department of Energy-Electrical Engineering Student.
+ *  Author      :   KOR DYLAN( Korean name: Jun Ki, Hong)
+ *  YouTube     :   https://www.youtube.com/channel/UC9DTd1Rv730XKmWRTpqY8Rg?view_as=subscriber
+ *  e-mail      :   dylan.7h@gmail.com
+ *  Software    :   Atmel Studio 7
+ *  Hardware    :   ATmega128, tested on ATmega128(jmod-128-1) at 16MHz.
  */ 
+
 #include <stdlib.h>
 #include "DataQueue.h"
 
