@@ -1,8 +1,16 @@
 ﻿/*
- * PWM_Timer.c
+ *  File Name   :   PWM_Timer.c
  *
- * Created: 2018-04-15 오전 1:28:56
- *  Author: kazam
+ *  Created	    :   2018-04-15 A.M. 1:28:56
+ *  belong      :   Korea Polytechnic University
+ *	                , Department of Energy-Electrical Engineering Student.
+ *  Author      :   KOR DYLAN( Korean name: Jun Ki, Hong)
+ *  YouTube     :   https://www.youtube.com/channel/UC9DTd1Rv730XKmWRTpqY8Rg?view_as=subscriber
+ *  e-mail      :   dylan.7h@gmail.com
+ *  IDE Software:   Atmel Studio 7
+ *  Hardware    :   ATmega128, tested on ATmega128(jmod-128-1) at 16MHz.
+ *  Note        :   This library is distributed in the hope that it will be useful. However, no warranty is given.
+ *  place       :   In April 2018 at the Korea Polytechnic University, Technology Innovation Park 401 ...
  */ 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -69,7 +77,7 @@ static inline uint8_t SetDuty(hPWM* key, uint8_t Channel, uint16_t Duty){
 	CHECK_KEY(key);
 	
 	if(Duty >= 10000)
-	return DUTY_ERROR;
+		return DUTY_ERROR;
 	
 	DstVal = key->Top_Value - (uint16_t)((uint32_t)key->Top_Value * (uint32_t)Duty / 10000);
 	if(DstVal == key->Top_Value)
@@ -264,6 +272,7 @@ static inline uint8_t DisablePWM(hPWM* key, uint8_t Channel){
 uint8_t InitPWM(hPWM* key, uint8_t ID, uint32_t System_Clock, uint16_t FRQ){
 	CHECK_KEY(key);
 	
+	// Set Member variable
 	key->System_Clock = System_Clock;
 	key->Target_FRQ = FRQ;
 	key->CH_A_Duty = 1;	
@@ -271,11 +280,13 @@ uint8_t InitPWM(hPWM* key, uint8_t ID, uint32_t System_Clock, uint16_t FRQ){
 	key->CH_C_Duty = 1;	
 	key->Timer_ID = ID;
 	
+	// Init ISR Func Ptr
 	key->OVF_ISR = NULL;
 	key->CH_A_COMP_ISR = NULL;
 	key->CH_B_COMP_ISR = NULL;
 	key->CH_C_COMP_ISR = NULL;
 	
+	// Set Member Func
 	key->SetFRQ = SetFRQ;
 	key->SetDuty = SetDuty;
 	key->SetOVF_ISR = SetOVF_ISR;
@@ -287,13 +298,19 @@ uint8_t InitPWM(hPWM* key, uint8_t ID, uint32_t System_Clock, uint16_t FRQ){
 	key->IsEnablePWM = IsEnablePWM;
 	key->WhoAmI = WhoAmI;
 	
+	// Set Timer Register
 	switch(ID){
+	// PFC PWM Mode
+	// Using PWM Port PB5, PB6, PB7 at Timer 1
+	// Using PWM Port PE3, PE4, PE5 at Timer 3
+	// The top value of TCNTn is ICRn.
 	case TIMER_ID1:
 		TCCR1B |= (1 << WGM13);
 		DDRB |= (1 << PB5) | (1 << PB6) | (1 << PB7);
 		PORTB &= 0xFF - ((1 << PB5) | (1 << PB6) | (1 << PB7));
 		TIMSK |= (1 <<TOIE1) | (1 << OCIE1A) | (1 << OCIE1B); 
 		ETIMSK |= (1 << OCIE1C);
+		// Static global variable registration.
 		hTimer1 = key;
 		break;
 	case TIMER_ID3:
@@ -301,14 +318,15 @@ uint8_t InitPWM(hPWM* key, uint8_t ID, uint32_t System_Clock, uint16_t FRQ){
 		DDRE |= (1 << PE3) | (1 << PE4) | (1 << PE5);
 		PORTB &= 0xFF - ((1 << PE3) | (1 << PE4) | (1 << PE5));
 		ETIMSK |= (1 <<TOIE3) | (1 << OCIE3A) | (1 << OCIE3B) | (1 << OCIE3C); 
+		// Static global variable registration.
 		hTimer3 = key;
 		break;
 	default:
 		return WRONG_ID;
 	}
-	
+	// Set Target PWM Frequency.
 	SetFRQ(key, FRQ);
-	
+	// Full interrupt permission.
 	sei();
 	
 	return 0;
