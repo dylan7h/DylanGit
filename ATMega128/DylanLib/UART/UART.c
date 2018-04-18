@@ -71,6 +71,29 @@ static inline uint32_t GetBaudRate(hUART* hKey){
 	return hKey->BaudRate;
 }
 
+static inline uint8_t SetUART_Handler(hUART* hKey, uint8_t Channel, uint32_t BaudRate){
+	if(hKey == NULL)
+	return NULL_KEY;
+	
+	hKey->BaudRate = BaudRate;
+	hKey->Channel = Channel;
+	switch(Channel){
+		case 0:
+		hSerial0 = hKey;
+		InitQueue(&hKey->hRx_Buf, Get_RX0_Buf(), RX0_BUF_SIZE);
+		InitQueue(&hKey->hTx_Buf, Get_TX0_Buf(), TX0_BUF_SIZE);
+		break;
+		case 1:
+		hSerial1 = hKey;
+		InitQueue(&hKey->hRx_Buf, Get_RX1_Buf(), RX1_BUF_SIZE);
+		InitQueue(&hKey->hTx_Buf, Get_TX1_Buf(), TX1_BUF_SIZE);
+		break;
+	}
+	sei();
+	
+	return NONE;
+}
+
 uint8_t InitSerial(hUART* hKey, uint8_t Channel, uint32_t System_Clock, uint32_t BaudRate){
 	uint16_t UBRR = (int16_t)(System_Clock/(BaudRate << 3) - 1);
 	if(hKey == NULL)
@@ -105,29 +128,6 @@ uint8_t InitSerial(hUART* hKey, uint8_t Channel, uint32_t System_Clock, uint32_t
 	hKey->SerialWrite = SerialWrite;
 	
 	return SetUART_Handler(hKey, Channel, BaudRate);
-}
-
-uint8_t SetUART_Handler(hUART* hKey, uint8_t Channel, uint32_t BaudRate){	
-	if(hKey == NULL)
-		return NULL_KEY;
-	
-	hKey->BaudRate = BaudRate;
-	hKey->Channel = Channel;
-	switch(Channel){
-	case 0:
-		hSerial0 = hKey;
-		InitQueue(&hKey->hRx_Buf, Get_RX0_Buf(), RX0_BUF_SIZE);
-		InitQueue(&hKey->hTx_Buf, Get_TX0_Buf(), TX0_BUF_SIZE);
-		break;
-	case 1:
-		hSerial1 = hKey;
-		InitQueue(&hKey->hRx_Buf, Get_RX1_Buf(), RX1_BUF_SIZE);
-		InitQueue(&hKey->hTx_Buf, Get_TX1_Buf(), TX1_BUF_SIZE);
-		break;
-	}
-	sei();
-	
-	return NONE;
 }
 
 hUART* GetUART_Handle(uint8_t Channel){
