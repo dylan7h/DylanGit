@@ -7,8 +7,10 @@
  *  Author		:	KOR DYLAN( Korean name: Jun Ki, Hong)
  *	YouTube		:	https://www.youtube.com/channel/UC9DTd1Rv730XKmWRTpqY8Rg?view_as=subscriber
  *	e-mail		:	dylan.7h@gmail.com
- *  Software	:	Atmel Studio 7
+ *  IDE Software:   Atmel Studio 7
  *	Hardware	:	ATmega128, tested on ATmega128(jmod-128-1) at 16MHz.
+ *  Note        :   This library is distributed in the hope that it will be useful. However, no warranty is given.
+ *  place       :   In April 2018 at the Korea Polytechnic University, Technology Innovation Park 401 ...
  */ 
 
 #include <avr/io.h>

@@ -55,6 +55,7 @@ typedef struct PWM_HANDLE {
 
 uint8_t InitPWM(hPWM* key, uint8_t ID, uint32_t System_Clock, uint16_t FRQ);
 
+/* [ Macro for ease of use ] */
 #define M_SetFRQ(key, FRQ) (key)->SetFRQ(key, FRQ)
 #define M_SetDuty(key, Channel, Duty) (key)->SetDuty(key, Channel, Duty)
 #define M_SetOVF_ISR(key, New_OVF_ISR) (key)->SetOVF_ISR(key, New_OVF_ISR)
