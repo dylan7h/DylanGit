@@ -1,23 +1,32 @@
-﻿/*
- * SysticTimer.c
+﻿ /*
+ *  File Name   :   SysticTimer.c
  *
- * Created: 2018-04-15 오전 1:29:18
- *  Author: kazam
+ *  Created	    :   2018-04-15 A.M 1:29:18
+ *  belong      :   Korea Polytechnic University
+ *	                , Department of Energy-Electrical Engineering Student.
+ *  Author      :   KOR DYLAN( Korean name: Jun Ki, Hong)
+ *  YouTube     :   https://www.youtube.com/channel/UC9DTd1Rv730XKmWRTpqY8Rg?view_as=subscriber
+ *  e-mail      :   dylan.7h@gmail.com
+ *  IDE Software:   Atmel Studio 7
+ *  Hardware    :   ATmega128, tested on ATmega128(jmod-128-1) at 16MHz.
+ *  Note        :   This library is distributed in the hope that it will be useful. However, no warranty is given.
+ *  place       :   In April 2018 at the Korea Polytechnic University, Technology Innovation Park 401 ...
  */ 
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdlib.h>
-#include "SysticTimer.h"
+#include "SystickTimer.h"
 
-#define MAX_SYSTIC 0xFFFFFFFF
+#define MAX_SYSTICK 0xFFFFFFFF
 
-hSystic* SysticHandle = NULL;
-static uint32_t Systic_Cnt = 0;
+hSystick* SysticHandle = NULL;
+static uint32_t Systick_Cnt = 0;
 static uint16_t CallBackCnt = 0;
 static uint16_t Callback_Period = 1000;
 static void(*CallBackFunction)(void);
 
-hSystic* GetSysticHandle(){
+hSystick* GetSystickHandle(){
 	return SysticHandle;
 }
 
@@ -32,14 +41,14 @@ static inline uint8_t SetTimer(uint16_t Period, void(*CallBackTimer)(void)){
 }
 
 static inline uint32_t Times(void){
-	return Systic_Cnt;
+	return Systick_Cnt;
 }
 
 static inline uint32_t Timediff(uint32_t t_end, uint32_t t_begin){
-	return (t_end < t_begin) ? (MAX_SYSTIC - t_begin) + t_end : t_end - t_begin;
+	return (t_end < t_begin) ? (MAX_SYSTICK - t_begin) + t_end : t_end - t_begin;
 }
 
-uint8_t InitSysticTimer(hSystic* key, uint32_t System_Clock){
+uint8_t InitSystickTimer(hSystick* key, uint32_t System_Clock){
 	SysticHandle = key;
 	key->SetTimer = SetTimer;
 	key->Timediff = Timediff;
@@ -66,7 +75,7 @@ uint8_t InitSysticTimer(hSystic* key, uint32_t System_Clock){
 }
 
 ISR(TIMER0_COMP_vect){
-	Systic_Cnt = (Systic_Cnt == MAX_SYSTIC) ? 0 : Systic_Cnt + 1;
+	Systick_Cnt = (Systick_Cnt == MAX_SYSTICK) ? 0 : Systick_Cnt + 1;
 }
 
 ISR(TIMER2_COMP_vect){

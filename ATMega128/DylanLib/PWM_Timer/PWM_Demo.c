@@ -1,12 +1,12 @@
 ﻿/*
- *  File Name           :	PWM_Demo.c
+ *  File Name   :   PWM_Demo.c
  *
- *  Created		:	2018-04-16 P.M 1:22:52
- *  belong		:	Korea Polytechnic University
+ *  Created     :   2018-04-16 P.M 1:22:52
+ *  belong      :   Korea Polytechnic University
  *					, Department of Energy-Electrical Engineering Student.
- *  Author		:	KOR DYLAN( Korean name: Jun Ki, Hong)
- *  YouTube		:	https://www.youtube.com/channel/UC9DTd1Rv730XKmWRTpqY8Rg?view_as=subscriber
- *  e-mail		:	dylan.7h@gmail.com
+ *  Author      :   KOR DYLAN( Korean name: Jun Ki, Hong)
+ *  YouTube     :   https://www.youtube.com/channel/UC9DTd1Rv730XKmWRTpqY8Rg?view_as=subscriber
+ *  e-mail      :   dylan.7h@gmail.com
  *  IDE Software:   Atmel Studio 7
  *  Hardware    :   ATmega128, tested on ATmega128(jmod-128-1) at 16MHz.
  */ 
