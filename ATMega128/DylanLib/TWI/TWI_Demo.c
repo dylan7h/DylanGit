@@ -61,14 +61,14 @@ int main(void){
 	InitSerial(&Serial0, 0, F_CPU, 115200);
 	Init_TWI(&hI2C, F_CPU, F_SCL, 0x68);	
 						
-	hI2C.TWI_MT_Register(&hI2C, MPU6050_RA_PWR_MGMT_1, &RegData[0], 1);		
-	hI2C.TWI_MT_Register(&hI2C, MPU6050_RA_PWR_MGMT_2, &RegData[1], 1);		
-	hI2C.TWI_MT_Register(&hI2C, MPU6050_RA_CONFIG, &RegData[2], 1);			
-	hI2C.TWI_MT_Register(&hI2C, MPU6050_RA_GYRO_CONFIG, &RegData[3], 1);			
-	hI2C.TWI_MT_Register(&hI2C, MPU6050_RA_ACCEL_CONFIG, &RegData[4], 1);	
+	M_TWI_MT_Register(&hI2C, MPU6050_RA_PWR_MGMT_1, &RegData[0], 1);		
+	M_TWI_MT_Register(&hI2C, MPU6050_RA_PWR_MGMT_2, &RegData[1], 1);		
+	M_TWI_MT_Register(&hI2C, MPU6050_RA_CONFIG, &RegData[2], 1);			
+	M_TWI_MT_Register(&hI2C, MPU6050_RA_GYRO_CONFIG, &RegData[3], 1);			
+	M_TWI_MT_Register(&hI2C, MPU6050_RA_ACCEL_CONFIG, &RegData[4], 1);	
 	
 	while(1){
-		hI2C.TWI_MR_Register(&hI2C, MPU6050_RA_ACCEL_XOUT_H, buf, 14);
+		M_TWI_MR_Register(&hI2C, MPU6050_RA_ACCEL_XOUT_H, buf, 14);
 		sprintf(stringBuf, "AccX: %d, AccY: %d, AccZ: %d, GryX: %d, GryY: %d, GryZ: %d\r\n"
 		, (int16_t)((buf[0] << 8) | buf[1]), (int16_t)((buf[2] << 8) | buf[3]), (int16_t)((buf[4] << 8) | buf[5])
 		, (int16_t)((buf[8] << 8) | buf[9]), (int16_t)((buf[10] << 8) | buf[11]), (int16_t)((buf[12] << 8) | buf[13]));

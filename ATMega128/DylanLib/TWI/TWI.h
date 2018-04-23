@@ -58,4 +58,19 @@ typedef struct TWI_HANDLE {
 
 uint8_t Init_TWI(hTWI* hKey, uint32_t System_Clock, uint32_t Comm_FRQ, uint8_t Address);
 
+#define M_TWI_Start(hKey)									(hKey)->TWI_Start()
+#define M_TWI_Stop(hKey)									(hKey)->TWI_Stop()
+#define M_TWI_Check(hKey, Status)							(hKey)->TWI_Check(Status)
+#define M_TWI_Call_Slave(hKey, RW_Mode)						(hKey)->TWI_Call_Slave(hKey, RW_Mode)
+#define M_TWI_Call_Master(hKey, RW_Mode)					(hKey)->TWI_Call_Master(hKey, RW_Mode)
+#define M_TWI_MT_Mode(hKey, data)							(hKey)->TWI_MT_Mode(data)
+#define M_TWI_MR_Mode(hKey, buf, Ack_Mode)					(hKey)->TWI_MR_Mode(buf, Ack_Mode)
+#define M_TWI_ST_Mode(hKey, data)							(hKey)->TWI_ST_Mode(data)
+#define M_TWI_SR_Mode(hKey, buf, Ack_Mode)					(hKey)->TWI_SR_Mode(buf, Ack_Mode)
+
+#define M_TWI_MT_Slave(hKey, Buf, Length)					(hKey)->TWI_MT_Slave(hKey, Buf, Length)
+#define M_TWI_MR_Slave(hKey, Buf, Length)					(hKey)->TWI_MR_Slave(hKey, Buf, Length)
+#define M_TWI_MT_Register(hKey, StartAddr, Buf, Length)		(hKey)->TWI_MT_Register(hKey, StartAddr, Buf, Length)
+#define M_TWI_MR_Register(hKey, StartAddr, Buf, Length)		(hKey)->TWI_MR_Register(hKey, StartAddr, Buf, Length)
+
 #endif /* TWI_H_ */
