@@ -75,7 +75,7 @@ typedef struct _NODE{
 */
 typedef struct QUEUE_HANDLE {
 	uint8_t BufSize;
-	uint8_t Len;
+	volatile uint8_t Len;
 	
 	Node* Buf;
 	Node* pFront;
