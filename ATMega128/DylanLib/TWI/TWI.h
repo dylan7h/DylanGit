@@ -24,9 +24,6 @@
 #define MASTER_MODE		0
 #define SLAVE_MODE		1
 
-#define BLOCKING		0
-#define NON_BLOCKING	1
-
 #define WRITE			0
 #define READ			1
 
@@ -34,25 +31,30 @@
 #define NACK_READ		1
 
 typedef struct TWI_HANDLE {
+	// Member Variable.
 	uint8_t		Address;
-	uint8_t		Status;
 	uint32_t	System_Clock;	// System Frequency.
 	uint32_t	Comm_FRQ;		// Communication Frequency.
+	
+	/* [ Member Function ] */
+	uint8_t(*SetSCL)(struct TWI_HANDLE* hKey, uint32_t Comm_FRQ);
+	// TWI Control Function Module.
+	uint8_t(*TWI_Start)(void);
+	uint8_t(*TWI_Stop)(void);
+	uint8_t(*TWI_Check)(uint8_t Status);
+	uint8_t(*TWI_Call_Slave)(struct TWI_HANDLE* hKey, uint8_t RW_Mode);
+	uint8_t(*TWI_Call_Master)(struct TWI_HANDLE* hKey, uint8_t RW_Mode);
+	uint8_t(*TWI_MT_Mode)(uint8_t data);
+	uint8_t(*TWI_MR_Mode)(uint8_t* buf, uint8_t Ack_Mode);
+	uint8_t(*TWI_ST_Mode)(uint8_t data);
+	uint8_t(*TWI_SR_Mode)(uint8_t* buf, uint8_t Ack_Mode);
+	
+	// TWI Combination Function Module.
+	uint8_t(*TWI_MT_Slave)(struct TWI_HANDLE* hKey, uint8_t* Buf, uint8_t Length);
+	uint8_t(*TWI_MR_Slave)(struct TWI_HANDLE* hKey, uint8_t* Buf, uint8_t Length);
+	uint8_t(*TWI_MT_Register)(struct TWI_HANDLE* hKey, uint8_t StartAddr, uint8_t* Buf, uint8_t Length);
+	uint8_t(*TWI_MR_Register)(struct TWI_HANDLE* hKey, uint8_t StartAddr, uint8_t* Buf, uint8_t Length);
 } hTWI;
-
-uint8_t SetSCL(hTWI* hKey, uint32_t Comm_FRQ);
-uint8_t TWI_Start(void);
-uint8_t TWI_Stop(void);
-uint8_t TWI_Check(uint8_t Status);
-uint8_t TWI_Call_Slave(hTWI* hKey, uint8_t RW_Mode);
-uint8_t TWI_Call_Master(hTWI* hKey, uint8_t RW_Mode);
-uint8_t TWI_MT_Mode(uint8_t data);
-uint8_t TWI_MR_Mode(uint8_t* buf, uint8_t Ack_Mode);
-uint8_t TWI_ST_Mode(uint8_t data);
-uint8_t TWI_SR_Mode(uint8_t* buf, uint8_t Ack_Mode);
-
-uint8_t TWI_MT_Register(hTWI* hKey, uint8_t StartAddr, uint8_t* Buf, uint8_t Length);
-uint8_t TWI_MR_Register(hTWI* hKey, uint8_t StartAddr, uint8_t* Buf, uint8_t Length);
 
 uint8_t Init_TWI(hTWI* hKey, uint32_t System_Clock, uint32_t Comm_FRQ, uint8_t Address);
 

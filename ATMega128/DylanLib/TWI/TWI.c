@@ -38,43 +38,32 @@
 #define TWI_DATA_RECEIVE_ACK_CONDITION	0xC4		// = (TWI_INTERRUPT_FLAG | TWI_ENABLE_ACK | TWI_ENABLE)
 #define TWI_DATA_RECEIVE_NACK_CONDITION	0x84		// = (TWI_INTERRUPT_FLAG | TWI_ENABLE)
 
-uint8_t SetSCL(hTWI* hKey, uint32_t Comm_FRQ){
-	uint16_t TWBR_Temp;
-	
-	TWBR_Temp = ((hKey->System_Clock / Comm_FRQ) - 16) / 2;
-	if((TWBR_Temp > 10) && (TWBR_Temp < 0xFF)){
-		TWBR = (uint8_t)TWBR_Temp;
-		
+
+
+static inline uint8_t TWI_Check(uint8_t Status){
+	register uint8_t t_out;
+
+	for(t_out = 0; t_out < 0xFF; t_out++){
+		if(TWI_STATUS == Status)
 		return NO_ERROR;
 	}
-	
-	return 1;
+
+	return TIME_OUT;
 }
 
-uint8_t TWI_Start(void){
+static uint8_t TWI_Start(void){
 	// Clear TWI Control Register.
 	TWCR = 0;
 	TWCR = TWI_START_CONDITION;			// Set TWI Start Condition.
 	return TWI_Check(TW_START);
 }
 
-uint8_t TWI_Stop(void){
+static inline uint8_t TWI_Stop(void){
 	TWCR = TWI_STOP_CONDITION;			// Set TWI Stop Condition.
 	return NO_ERROR;
 }
 
-uint8_t TWI_Check(uint8_t Status){
-	register uint8_t t_out;
-
-	for(t_out = 0; t_out < 0xFF; t_out++){
-		if(TWI_STATUS == Status)
-			return NO_ERROR;
-	}
-
-	return TIME_OUT;
-}
-
-uint8_t TWI_Call_Slave(hTWI* hKey, uint8_t RW_Mode){
+static inline uint8_t TWI_Call_Slave(hTWI* hKey, uint8_t RW_Mode){
 	// Set Address.
 	TWDR = (hKey->Address | RW_Mode);
 	// Call Slave.
@@ -83,7 +72,7 @@ uint8_t TWI_Call_Slave(hTWI* hKey, uint8_t RW_Mode){
 	return (RW_Mode == WRITE) ? TWI_Check(TW_MT_SLA_ACK) : TWI_Check(TW_MR_SLA_ACK);
 }
 
-uint8_t TWI_Call_Master(hTWI* hKey, uint8_t RW_Mode){
+static inline uint8_t TWI_Call_Master(hTWI* hKey, uint8_t RW_Mode){
 	// Set Address.
 	TWDR = (hKey->Address | RW_Mode);
 	// Call Slave.
@@ -92,7 +81,7 @@ uint8_t TWI_Call_Master(hTWI* hKey, uint8_t RW_Mode){
 	return (RW_Mode == WRITE) ? TWI_Check(TW_ST_SLA_ACK) : TWI_Check(TW_SR_SLA_ACK);
 }
 
-uint8_t TWI_MT_Mode(uint8_t data){
+static inline uint8_t TWI_MT_Mode(uint8_t data){
 	// Set Transmit Data.
 	TWDR = data;
 	// Transmit Data To Slave.
@@ -101,7 +90,7 @@ uint8_t TWI_MT_Mode(uint8_t data){
 	return TWI_Check(TW_MT_DATA_ACK);
 }
 
-uint8_t TWI_MR_Mode(uint8_t* buf, uint8_t Ack_Mode){
+static inline uint8_t TWI_MR_Mode(uint8_t* buf, uint8_t Ack_Mode){
 	uint8_t retVal;
 	
 	// Receive Data From Slave.
@@ -115,7 +104,7 @@ uint8_t TWI_MR_Mode(uint8_t* buf, uint8_t Ack_Mode){
 	return retVal;
 }
 
-uint8_t TWI_ST_Mode(uint8_t data){
+static inline uint8_t TWI_ST_Mode(uint8_t data){
 	// Set Transmit Data.
 	TWDR = data;
 	// Transmit Data To Slave.
@@ -124,7 +113,7 @@ uint8_t TWI_ST_Mode(uint8_t data){
 	return TWI_Check(TW_ST_DATA_ACK);
 }
 
-uint8_t TWI_SR_Mode(uint8_t* buf, uint8_t Ack_Mode){
+static inline uint8_t TWI_SR_Mode(uint8_t* buf, uint8_t Ack_Mode){
 	uint8_t retVal;
 	
 	// Receive Data From Slave.
@@ -138,7 +127,44 @@ uint8_t TWI_SR_Mode(uint8_t* buf, uint8_t Ack_Mode){
 	return retVal;
 }
 
-uint8_t TWI_MT_Register(hTWI* hKey, uint8_t StartAddr, uint8_t* Buf, uint8_t Length){
+static inline uint8_t TWI_MT_Slave(struct TWI_HANDLE* hKey, uint8_t* Buf, uint8_t Length){
+	register uint8_t idx;
+	
+	if(TWI_Start() == TIME_OUT)						return TW_START;
+	if(TWI_Call_Slave(hKey, WRITE) == TIME_OUT)		return TW_MT_SLA_ACK;
+	
+	for(idx = 0; idx < Length; idx++){
+		if(TWI_MT_Mode(Buf[idx]) == TIME_OUT)
+			return TW_MT_DATA_ACK;
+	}
+	
+	TWI_Stop();
+	
+	return NO_ERROR;
+}
+
+static inline uint8_t TWI_MR_Slave(struct TWI_HANDLE* hKey, uint8_t* Buf, uint8_t Length){
+	register uint8_t idx;
+	
+	// Start
+	if(TWI_Start() == TIME_OUT)						return TW_START;
+	if(TWI_Call_Slave(hKey, READ) == TIME_OUT)		return TW_MR_SLA_ACK;
+	
+	// Receive Data the slave.
+	for(idx = 0; idx < (Length - 1); idx++){
+		if(TWI_MR_Mode(&Buf[idx], ACK_READ) == TIME_OUT)
+			return TW_MR_DATA_ACK;
+	}
+	
+	if(TWI_MR_Mode(&Buf[Length - 1], NACK_READ) == TIME_OUT)
+		return TW_MR_DATA_NACK;
+	
+	TWI_Stop();
+	
+	return NO_ERROR;
+}
+
+static inline uint8_t TWI_MT_Register(hTWI* hKey, uint8_t StartAddr, uint8_t* Buf, uint8_t Length){
 	register uint8_t idx;
 	
 	if(TWI_Start() == TIME_OUT)						return TW_START;
@@ -155,7 +181,7 @@ uint8_t TWI_MT_Register(hTWI* hKey, uint8_t StartAddr, uint8_t* Buf, uint8_t Len
 	return NO_ERROR;
 }
 
-uint8_t TWI_MR_Register(hTWI* hKey, uint8_t StartAddr, uint8_t* Buf, uint8_t Length){
+static inline uint8_t TWI_MR_Register(hTWI* hKey, uint8_t StartAddr, uint8_t* Buf, uint8_t Length){
 	register uint8_t idx;
 	
 	// First Start.(Call the register of the slave.)
@@ -181,11 +207,43 @@ uint8_t TWI_MR_Register(hTWI* hKey, uint8_t StartAddr, uint8_t* Buf, uint8_t Len
 	return NO_ERROR;
 }
 
-uint8_t Init_TWI(hTWI* hKey, uint32_t System_Clock, uint32_t Comm_FRQ, uint8_t Address){
+static inline uint8_t SetSCL(hTWI* hKey, uint32_t Comm_FRQ){
+	uint16_t TWBR_Temp;
+	
+	TWBR_Temp = ((hKey->System_Clock / Comm_FRQ) - 16) / 2;
+	if((TWBR_Temp > 10) && (TWBR_Temp < 0xFF)){
+		TWBR = (uint8_t)TWBR_Temp;
+		
+		return NO_ERROR;
+	}
+	
+	return 1;
+}
+
+uint8_t Init_TWI(hTWI* hKey, uint32_t System_Clock, uint32_t Comm_FRQ, uint8_t Address){	
 	// Set Member Variable.
 	hKey->System_Clock = System_Clock;
 	hKey->Comm_FRQ = Comm_FRQ;
 	hKey->Address = (Address << 1);
+	
+	// Member Function.
+	hKey->TWI_Check = TWI_Check;
+	hKey->TWI_Start = TWI_Start;
+	hKey->TWI_Stop = TWI_Stop;
+	hKey->TWI_Call_Slave = TWI_Call_Slave;
+	hKey->TWI_Call_Master = TWI_Call_Master;
+	hKey->TWI_MT_Mode = TWI_MT_Mode;
+	hKey->TWI_MR_Mode = TWI_MR_Mode;
+	hKey->TWI_ST_Mode = TWI_ST_Mode;
+	hKey->TWI_SR_Mode = TWI_SR_Mode;
+	hKey->TWI_MT_Register = TWI_MT_Register;
+	hKey->TWI_MR_Register = TWI_MR_Register;
+	hKey->SetSCL = SetSCL;
+	
+	hKey->TWI_MT_Slave = TWI_MT_Slave;
+	hKey->TWI_MR_Slave = TWI_MR_Slave;
+	hKey->TWI_MT_Register = TWI_MT_Register;
+	hKey->TWI_MR_Register = TWI_MR_Register;
 	
 	// Set SCL.
 	return SetSCL(hKey, Comm_FRQ);
