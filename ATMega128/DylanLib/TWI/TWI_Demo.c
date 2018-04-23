@@ -1,9 +1,16 @@
 ﻿/*
- * TWI_Demo.c
+ *  File Name   :   TWI_Demo.c
  *
- * Created: 2018-04-21 오후 5:45:34
- *  Author: kazam
+ *  Created     :   2018-04-21 P.M 5:45:34
+ *  belong      :   Korea Polytechnic University
+ *					, Department of Energy-Electrical Engineering Student.
+ *  Author      :   KOR DYLAN( Korean name: Jun Ki, Hong)
+ *  YouTube     :   https://www.youtube.com/channel/UC9DTd1Rv730XKmWRTpqY8Rg?view_as=subscriber
+ *  e-mail      :   dylan.7h@gmail.com
+ *  IDE Software:   Atmel Studio 7
+ *  Hardware    :   ATmega128, tested on ATmega128(jmod-128-1) at 16MHz.
  */ 
+
 #define F_CPU 16000000UL
 #define F_SCL 400000UL
 #include <avr/io.h>

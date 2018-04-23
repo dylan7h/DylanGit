@@ -1,9 +1,18 @@
 ﻿/*
- * TWI.c
+ *  File Name   :   TWI.c
  *
- * Created: 2018-04-15 오전 1:28:31
- *  Author: kazam
+ *  Created	    :   2018-04-15 P.M 3:27:24
+ *  belong      :   Korea Polytechnic University
+ *	                , Department of Energy-Electrical Engineering Student.
+ *  Author      :   KOR DYLAN( Korean name: Jun Ki, Hong)
+ *  YouTube     :   https://www.youtube.com/channel/UC9DTd1Rv730XKmWRTpqY8Rg?view_as=subscriber
+ *  e-mail      :   dylan.7h@gmail.com
+ *  IDE Software:   Atmel Studio 7
+ *  Hardware    :   ATmega128, tested on ATmega128(jmod-128-1) at 16MHz.
+ *  Note        :   This library is distributed in the hope that it will be useful. However, no warranty is given.
+ *  place       :   In April 2018 at the Korea Polytechnic University, Technology Innovation Park 401 ...
  */ 
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/twi.h>
@@ -14,17 +23,17 @@
 #include "UART.h"
 
 // (0x78 == (1 << TWS7) | (1 << TWS6) | (1 << TWS5) | (1 << TWS4) | (1 << TWS3))
-#define TWI_STATUS				(TWSR & 0xF8)	
-#define TW_MASTER_ARB_LOST		0x38	//(TW_MT_ARB_LOST or TW_MR_ARB_LOST)
+#define TWI_STATUS						(TWSR & 0xF8)	
+#define TW_MASTER_ARB_LOST				0x38	//(TW_MT_ARB_LOST or TW_MR_ARB_LOST)
 
-#define TWI_INTERRUPT_FLAG			0x80		// = (1 << TWINT)
-#define TWI_ENABLE_ACK				0x40		// = (1 << TWEA)
-#define TWI_START					0x20		// = (1 << TWSTA)
-#define TWI_REP_START				0x10		// = (1 << TWSTO)
-#define TWI_STOP					0x10		// = (1 << TWSTO)
-#define TWI_WRITE_COLLISION			0x08		// = (1 << TWWC)
-#define TWI_ENABLE					0x04		// = (1 << TWEN)
-#define TWI_INTERRUPT_ENABLE		0x01		// = (1 << TWIE)
+#define TWI_INTERRUPT_FLAG				0x80		// = (1 << TWINT)
+#define TWI_ENABLE_ACK					0x40		// = (1 << TWEA)
+#define TWI_START						0x20		// = (1 << TWSTA)
+#define TWI_REP_START					0x10		// = (1 << TWSTO)
+#define TWI_STOP						0x10		// = (1 << TWSTO)
+#define TWI_WRITE_COLLISION				0x08		// = (1 << TWWC)
+#define TWI_ENABLE						0x04		// = (1 << TWEN)
+#define TWI_INTERRUPT_ENABLE			0x01		// = (1 << TWIE)
 
 #define TWI_START_CONDITION				0xA4		// = (TWI_INTERRUPT_FLAG | TWI_START | TWI_ENABLE)
 #define TWI_STOP_CONDITION				0x94		// = (TWI_INTERRUPT_FLAG | TWI_STO | TWI_ENABLE)
@@ -64,12 +73,12 @@ uint8_t SetSCL(hTWI* hKey, uint32_t Comm_FRQ){
 uint8_t TWI_Start(hTWI* hKey){
 	// Clear TWI Control Register.
 	TWCR &= (hKey->Mode == BLOCKING) ? 0 : TWI_INTERRUPT_ENABLE;
-	TWCR = TWI_START_CONDITION;	// Set TWI Start Condition.
+	TWCR = TWI_START_CONDITION;			// Set TWI Start Condition.
 	return TWI_Check(hKey, TW_START);
 }
 
 uint8_t TWI_Stop(hTWI* hKey){
-	TWCR = TWI_STOP_CONDITION;		// Set TWI Stop Condition.
+	TWCR = TWI_STOP_CONDITION;			// Set TWI Stop Condition.
 	return NO_ERROR;
 }
 
