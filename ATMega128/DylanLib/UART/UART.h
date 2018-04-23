@@ -25,11 +25,11 @@
 
 // [ Set the transmit and receive buffer memory size at here. ]
 // - Channel 1 Buf Size.
-#define RX0_BUF_SIZE 128
-#define TX0_BUF_SIZE 128
+#define RX0_BUF_SIZE 250
+#define TX0_BUF_SIZE 250
 // - Channel 2 Buf Size.
-#define RX1_BUF_SIZE 16
-#define TX1_BUF_SIZE 16
+#define RX1_BUF_SIZE 1
+#define TX1_BUF_SIZE 1
 
 /*
 *  [ UART(Serial) Communication Handle Structure ]

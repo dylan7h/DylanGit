@@ -46,11 +46,21 @@ static inline uint8_t SerialWrite(hUART* hKey, uint8_t* Buf, uint8_t Len){
 	if(hKey == NULL) return NULL_KEY;
 	if(Buf == NULL) return NULL_BUF;
 	
+	// Enter Critical section.
+	switch(hKey->Channel){
+	case 0:
+		UCSR0B ^= (1 << UDRIE0);
+		break;
+	case 1:
+		UCSR1B ^= (1 << UDRIE1);
+		break;
+	}
+	
 	// Send Data Into Transmit Buffer.
 	for(idx = 0; idx < Len; idx++)
 		M_EnQueue(&hKey->hTx_Buf, Buf[idx]);
 	
-	// Enable data register ready interrupt.
+	// Leave Critical section.
 	switch(hKey->Channel){
 	case 0:
 		UCSR0B |= (1 << UDRIE0);
@@ -70,9 +80,29 @@ static inline uint8_t SerialRead(hUART* hKey, uint8_t* Buf, uint8_t Size){
 	if(hKey == NULL) return NULL_KEY;
 	if(Buf == NULL) return NULL_BUF;
 	
+	// Enter Critical section.
+	switch(hKey->Channel){
+	case 0:
+		UCSR0B ^= (1 << RXCIE0);
+		break;
+	case 1:
+		UCSR1B ^= (1 << RXCIE1);
+		break;
+	}
+	
 	// Receive Data Into User Buf.
 	while(M_DeQueue(&hKey->hRx_Buf, &Buf[idx]) != EMPTY_BUF) {
 		if(++idx >= Size) break;
+	}
+	
+	// Leave Critical section.
+	switch(hKey->Channel){
+	case 0:
+		UCSR0B |= (1 << RXCIE0);
+		break;
+	case 1:
+		UCSR1B |= (1 << RXCIE1);
+		break;
 	}
 	
 	return idx;
