@@ -44,13 +44,6 @@
 #define MPU6050_RA_GYRO_YOUT_L			0x46
 #define MPU6050_RA_GYRO_ZOUT_H			0x47
 #define MPU6050_RA_GYRO_ZOUT_L			0x48
-/*
-I2C_WriteReg(&MPU6050, MPU6050_RA_PWR_MGMT_1, &RegData[0], 1);
-I2C_WriteReg(&MPU6050, MPU6050_RA_PWR_MGMT_2, &RegData[1], 1);
-I2C_WriteReg(&MPU6050, MPU6050_RA_CONFIG, &RegData[2], 1);
-I2C_WriteReg(&MPU6050, MPU6050_RA_GYRO_CONFIG, &RegData[3], 1);
-I2C_WriteReg(&MPU6050, MPU6050_RA_ACCEL_CONFIG, &RegData[4], 1);
-*/
 
 #define WAKE_UP_MPU6050					0x00
 #define DLPF_CFG_LV6					0x06
@@ -66,7 +59,7 @@ int main(void){
 	char stringBuf[100];
 	
 	InitSerial(&Serial0, 0, F_CPU, 115200);
-	Init_TWI(&hI2C, F_CPU, F_SCL, BLOCKING, 0x68);	
+	Init_TWI(&hI2C, F_CPU, F_SCL, 0x68);	
 						
 	TWI_MT_Register(&hI2C, MPU6050_RA_PWR_MGMT_1, &RegData[0], 1);		
 	TWI_MT_Register(&hI2C, MPU6050_RA_PWR_MGMT_2, &RegData[1], 1);		
