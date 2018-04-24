@@ -30,7 +30,7 @@
 
 typedef struct TWI_HANDLE {
 	// Member Variable.
-	uint8_t		Address;
+	uint8_t		Address;		// TWI Target Device Address.
 	uint32_t	System_Clock;	// System Frequency.
 	uint32_t	Comm_FRQ;		// Communication Frequency.
 	

@@ -83,7 +83,7 @@ int main(void){
 	M_TWI_MT_Register(&hMPU6050, MPU6050_RA_ACCEL_CONFIG, &RegData[4], 1);	
 	
 	while(1){
-		// Using TWI, we receive Accel X / Y / Z, temperature, and Gyro X/Y/Z values from MP MP605.
+		// Using TWI, we receive Accel X / Y / Z, temperature, and Gyro X/Y/Z values from MPU 6050.
 		// (Receive data from consecutive registers with MPU6050_RA_ACCEL_XOUT_H as the start address. 
 		// Receive and save data from 14 registers, including MPU6050_RA_ACCEL_XOUT_H to buf. )
 		M_TWI_MR_Register(&hMPU6050, MPU6050_RA_ACCEL_XOUT_H, buf, 14);
