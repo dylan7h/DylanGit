@@ -16,8 +16,6 @@
 #ifndef TWI_H_
 #define TWI_H_
 
-#include "DataQueue.h"
-
 #define NO_ERROR		0
 #define TIME_OUT		1
 

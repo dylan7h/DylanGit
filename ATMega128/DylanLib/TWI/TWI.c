@@ -38,14 +38,12 @@
 #define TWI_DATA_RECEIVE_ACK_CONDITION	0xC4		// = (TWI_INTERRUPT_FLAG | TWI_ENABLE_ACK | TWI_ENABLE)
 #define TWI_DATA_RECEIVE_NACK_CONDITION	0x84		// = (TWI_INTERRUPT_FLAG | TWI_ENABLE)
 
-
-
 static inline uint8_t TWI_Check(uint8_t Status){
 	register uint8_t t_out;
 
 	for(t_out = 0; t_out < 0xFF; t_out++){
 		if(TWI_STATUS == Status)
-		return NO_ERROR;
+			return NO_ERROR;
 	}
 
 	return TIME_OUT;
