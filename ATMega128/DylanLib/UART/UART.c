@@ -18,8 +18,8 @@
 #include <stdlib.h>
 #include "UART.h"
 
-hUART* hSerial0;
-hUART* hSerial1;
+static hUART* hSerial0;
+static hUART* hSerial1;
 
 /* [ Static Memory Version ] */
 #ifdef USING_STATIC_MEMORY
