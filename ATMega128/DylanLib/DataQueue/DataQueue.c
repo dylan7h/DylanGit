@@ -16,15 +16,15 @@
 #include <stdlib.h>
 #include "DataQueue.h"
 
-static inline uint8_t IsEmpty(hQueue* hKey){
+static inline uint8_t IsEmpty(hQueue* const hKey){
 	return (hKey->Len == 0) ? TRUE : FALSE;
 }
 
-static inline uint8_t IsFull(hQueue* hKey){
+static inline uint8_t IsFull(hQueue* const hKey){
 	return (hKey->Len == hKey->BufSize) ? TRUE : FALSE;
 }
 
-static inline uint8_t EnQueue(hQueue* hKey, uint8_t Data){
+static inline uint8_t EnQueue(hQueue* const hKey, const uint8_t Data){
 	if(IsFull(hKey))
 		return FULL_BUF;
 		
@@ -35,7 +35,7 @@ static inline uint8_t EnQueue(hQueue* hKey, uint8_t Data){
 	return NONE;
 }
 
-static inline uint8_t DeQueue(hQueue* hKey, uint8_t* Data){
+static inline uint8_t DeQueue(hQueue* const hKey, uint8_t* const Data){
 	if(IsEmpty(hKey))
 		return EMPTY_BUF;
 	
@@ -46,7 +46,7 @@ static inline uint8_t DeQueue(hQueue* hKey, uint8_t* Data){
 	return NONE;
 }
 
-static inline uint8_t Peek(hQueue* hKey, uint8_t* Data){
+static inline uint8_t Peek(hQueue* const hKey, uint8_t* const Data){
 	if(IsEmpty(hKey))
 		return EMPTY_BUF;
 	
@@ -55,11 +55,11 @@ static inline uint8_t Peek(hQueue* hKey, uint8_t* Data){
 	return NONE;
 }
 
-static inline uint8_t GetQueueLen(hQueue* hKey){
+static inline uint8_t GetQueueLen(hQueue* const hKey){
 	return hKey->Len;
 }
 
-uint8_t InitQueue(hQueue* hKey, Node* newBuf, uint8_t BufSize){
+uint8_t InitQueue(hQueue* const hKey, Node* const newBuf, const uint8_t BufSize){
 	register uint8_t idx;
 	
 	if(hKey == NULL) return NULL_KEY;

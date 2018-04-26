@@ -37,9 +37,9 @@ static inline Node* Get_TX0_Buf() { return (Node*)malloc(sizeof(Node)*TX0_BUF_SI
 static inline Node* Get_TX1_Buf() { return (Node*)malloc(sizeof(Node)*TX1_BUF_SIZE); }
 #endif
 
-static inline uint8_t SerialAvailable(hUART* hKey){ return !(uint8_t)M_IsEmpty(&hKey->hRx_Buf); }
+static inline uint8_t SerialAvailable(hUART* const hKey){ return !(uint8_t)M_IsEmpty(&hKey->hRx_Buf); }
 
-static inline uint8_t SerialWrite(hUART* hKey, uint8_t* Buf, uint8_t Len){
+static inline uint8_t SerialWrite(hUART* const hKey, uint8_t* const Buf, const uint8_t Len){
 	register uint8_t idx;
 	
 	// Error Check.
@@ -73,7 +73,7 @@ static inline uint8_t SerialWrite(hUART* hKey, uint8_t* Buf, uint8_t Len){
 	return NONE;
 }
 
-static inline uint8_t SerialRead(hUART* hKey, uint8_t* Buf, uint8_t Size){
+static inline uint8_t SerialRead(hUART* const hKey, uint8_t* const Buf, const uint8_t Size){
 	register uint8_t idx = 0;
 	
 	// Error Check.
@@ -109,16 +109,16 @@ static inline uint8_t SerialRead(hUART* hKey, uint8_t* Buf, uint8_t Size){
 }
 
 // return Channel of Handle.
-static inline uint8_t WhoAmI(hUART* hKey){
+static inline uint8_t WhoAmI(hUART* const hKey){
 	return hKey->Channel;
 }
 // return BaudRate of Handle.
-static inline uint32_t GetBaudRate(hUART* hKey){
+static inline uint32_t GetBaudRate(hUART* const hKey){
 	return hKey->BaudRate;
 }
 
 // UART Handle Initialize.
-static inline uint8_t SetUART_Handler(hUART* hKey, uint8_t Channel, uint32_t BaudRate){
+static inline uint8_t SetUART_Handler(hUART* const hKey, const uint8_t Channel, const uint32_t BaudRate){
 	// Error Check.
 	if(hKey == NULL) return NULL_KEY;
 	
@@ -147,7 +147,7 @@ static inline uint8_t SetUART_Handler(hUART* hKey, uint8_t Channel, uint32_t Bau
 	return NONE;
 }
 
-uint8_t InitSerial(hUART* hKey, uint8_t Channel, uint32_t System_Clock, uint32_t BaudRate){
+uint8_t InitSerial(hUART* const hKey, const uint8_t Channel, const uint32_t System_Clock, const uint32_t BaudRate){
 	uint16_t UBRR = (int16_t)(System_Clock/(BaudRate << 3) - 1);
 	if(hKey == NULL)
 		return 1;
@@ -184,7 +184,7 @@ uint8_t InitSerial(hUART* hKey, uint8_t Channel, uint32_t System_Clock, uint32_t
 	return SetUART_Handler(hKey, Channel, BaudRate);
 }
 
-hUART* GetUART_Handle(uint8_t Channel){
+hUART* GetUART_Handle(const uint8_t Channel){
 	hUART* retHandle = NULL;
 	
 	switch(Channel){
@@ -207,7 +207,7 @@ ISR(USART0_UDRE_vect){
 		UCSR0B ^= (1 << UDRIE0);
 }
 ISR(USART0_RX_vect){
-	register uint8_t Data = UDR0;
+	const register uint8_t Data = UDR0;
 	M_EnQueue(&hSerial0->hRx_Buf, Data);
 }
 ISR(USART1_UDRE_vect){
@@ -218,6 +218,6 @@ ISR(USART1_UDRE_vect){
 		UCSR1B ^= (1 << UDRIE1);
 }
 ISR(USART1_RX_vect){
-	uint8_t Data = UDR1;
+	const register uint8_t Data = UDR1;
 	M_EnQueue(&hSerial1->hRx_Buf, Data);
 }

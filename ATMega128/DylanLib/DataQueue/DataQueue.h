@@ -81,12 +81,12 @@ typedef struct QUEUE_HANDLE {
 	Node* pFront;
 	Node* pTail;
 	
-	uint8_t(*IsEmpty)(struct QUEUE_HANDLE* hKey);
-	uint8_t(*IsFull)(struct QUEUE_HANDLE* hKey);
-	uint8_t(*EnQueue)(struct QUEUE_HANDLE* hKey, uint8_t Data);
-	uint8_t(*DeQueue)(struct QUEUE_HANDLE* hKey, uint8_t* Data);
-	uint8_t(*Peek)(struct QUEUE_HANDLE* hKey, uint8_t* Data);
-	uint8_t(*GetQueueLen)(struct QUEUE_HANDLE* hKey);		
+	uint8_t(*IsEmpty)(struct QUEUE_HANDLE* const hKey);
+	uint8_t(*IsFull)(struct QUEUE_HANDLE* const hKey);
+	uint8_t(*EnQueue)(struct QUEUE_HANDLE* const hKey, const uint8_t Data);
+	uint8_t(*DeQueue)(struct QUEUE_HANDLE* const hKey, uint8_t* const Data);
+	uint8_t(*Peek)(struct QUEUE_HANDLE* const hKey, uint8_t* const Data);
+	uint8_t(*GetQueueLen)(struct QUEUE_HANDLE* const hKey);		
 } hQueue;
 
 /*  [ Initialize Queue Function ]
@@ -97,7 +97,7 @@ typedef struct QUEUE_HANDLE {
 *---------------------------------------------------------------------------------------------------------
 *   >> BufSize      : The size of the buffer to be used for the queue.
 */
-uint8_t InitQueue(hQueue* hKey, Node* newBuf, uint8_t BufSize);
+uint8_t InitQueue(hQueue* const hKey, Node* const newBuf, const uint8_t BufSize);
 
 /* [ Macro for ease of use ] */
 #define M_IsEmpty(hKey)         (hKey)->IsEmpty(hKey)

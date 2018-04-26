@@ -62,11 +62,11 @@ typedef struct UART_HANDLE {
 	hQueue hRx_Buf;
 	hQueue hTx_Buf;
 
-	uint8_t(*SerialAvailable)(struct UART_HANDLE* hKey);
-	uint8_t(*SerialWrite)(struct UART_HANDLE* hKey, uint8_t* Buf, uint8_t Len);
-	uint8_t(*SerialRead)(struct UART_HANDLE* hKey, uint8_t* Buf, uint8_t Size);
-	uint8_t(*WhoAmI)(struct UART_HANDLE* hKey);
-	uint32_t(*GetBaudRate)(struct UART_HANDLE* hKey);
+	uint8_t(*SerialAvailable)(struct UART_HANDLE* const hKey);
+	uint8_t(*SerialWrite)(struct UART_HANDLE* const hKey, uint8_t* const Buf, const uint8_t Len);
+	uint8_t(*SerialRead)(struct UART_HANDLE* const hKey, uint8_t* const Buf, const uint8_t Size);
+	uint8_t(*WhoAmI)(struct UART_HANDLE* const hKey);
+	uint32_t(*GetBaudRate)(struct UART_HANDLE* const hKey);
 } hUART;
 
 /*  [ Initialize UART Function ]
@@ -75,7 +75,7 @@ typedef struct UART_HANDLE {
 *   >> System_Clock : System Frequency.
 *   >> BaudRate     : Communication Speed.
 */
-uint8_t InitSerial(hUART* hKey, uint8_t Channel, uint32_t System_Clock, uint32_t BaudRate);
+uint8_t InitSerial(hUART* const hKey, const uint8_t Channel, const uint32_t System_Clock, const uint32_t BaudRate);
 
 /*
 *   [ GetUART_Handle ]
@@ -83,7 +83,7 @@ uint8_t InitSerial(hUART* hKey, uint8_t Channel, uint32_t System_Clock, uint32_t
 *   , return the address of the handle for that channel.
 *   >> Channel  :  The channel number of the handle address to return.
 */
-hUART* GetUART_Handle(uint8_t Channel);
+hUART* GetUART_Handle(const uint8_t Channel);
 
 /* [ Macro for ease of use ] */
 #define M_SerialAvailable(hKey)         (hKey)->SerialAvailable(hKey)
