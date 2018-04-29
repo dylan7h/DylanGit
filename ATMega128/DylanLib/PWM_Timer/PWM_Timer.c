@@ -81,9 +81,9 @@ static inline uint8_t SetDuty(hPWM* key, uint8_t Channel, uint16_t Duty){
 	
 	DstVal = key->Top_Value - (uint16_t)((uint32_t)key->Top_Value * (uint32_t)Duty / 10000);
 	if(DstVal == key->Top_Value)
-	DstVal -= 1;
+		DstVal -= 1;
 	else if(DstVal == 0)
-	DstVal = 1;
+		DstVal = 1;
 	
 	switch(Channel){
 	case CH_A_PWM:
@@ -130,11 +130,11 @@ static inline uint8_t SetDuty(hPWM* key, uint8_t Channel, uint16_t Duty){
 	return 0;
 }
 
-static inline uint8_t SetFRQ(hPWM* key, uint16_t FRQ){
-	register uint16_t TopVal;
+static inline uint8_t SetFRQ(hPWM* key, uint32_t FRQ){
+	register uint32_t TopVal;
 	CHECK_KEY(key);
-	if(FRQ > 20000)
-		return FRQ_ERROR;
+	//if(FRQ > 20000)
+	//	return FRQ_ERROR;
 	
 	if(FRQ > 130){
 		TopVal = key->System_Clock / (2 * FRQ);
@@ -269,7 +269,7 @@ static inline uint8_t DisablePWM(hPWM* key, uint8_t Channel){
 	return 0;
 }
 
-uint8_t InitPWM(hPWM* key, uint8_t ID, uint32_t System_Clock, uint16_t FRQ){
+uint8_t InitPWM(hPWM* key, uint8_t ID, uint32_t System_Clock, uint32_t FRQ){
 	CHECK_KEY(key);
 	
 	// Set Member variable

@@ -87,7 +87,7 @@
 */
 typedef struct PWM_HANDLE {
 	uint8_t Timer_ID;
-	uint16_t Target_FRQ;
+	uint32_t Target_FRQ;
 	uint16_t Top_Value;
 	uint16_t CH_A_Duty;
 	uint16_t CH_B_Duty;
@@ -100,7 +100,7 @@ typedef struct PWM_HANDLE {
 	uint8_t(*CH_B_COMP_ISR)(void);
 	uint8_t(*CH_C_COMP_ISR)(void);
 	
-	uint8_t(*SetFRQ)(struct PWM_HANDLE* key, uint16_t FRQ);
+	uint8_t(*SetFRQ)(struct PWM_HANDLE* key, uint32_t FRQ);
 	uint8_t(*SetDuty)(struct PWM_HANDLE* key, uint8_t Channel, uint16_t Duty);
 	uint8_t(*SetOVF_ISR)(struct PWM_HANDLE* key, uint8_t(*New_OVF_ISR)(void));
 	uint8_t(*SetCOMP_ISR)(struct PWM_HANDLE* key, uint8_t Channel, uint8_t(*COMP_ISR)(void));
@@ -118,7 +118,7 @@ typedef struct PWM_HANDLE {
 *   >> System_Clock : System Frequency.
 *   >> FRQ          : Target PWM Frequency.
 */
-uint8_t InitPWM(hPWM* key, uint8_t ID, uint32_t System_Clock, uint16_t FRQ);
+uint8_t InitPWM(hPWM* key, uint8_t ID, uint32_t System_Clock, uint32_t FRQ);
 
 /* [ Macro for ease of use ] */
 #define M_SetFRQ(key, FRQ) (key)->SetFRQ(key, FRQ)

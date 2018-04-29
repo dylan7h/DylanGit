@@ -126,14 +126,14 @@ static inline uint8_t SetUART_Handler(hUART* const hKey, const uint8_t Channel, 
 	hKey->BaudRate = BaudRate;
 	hKey->Channel = Channel;
 	switch(Channel){
-		case 0:
+	case 0:
 		// Set static global variable.
 		hSerial0 = hKey;
 		// Initialize Transmit/Receive Queue.
 		InitQueue(&hKey->hRx_Buf, Get_RX0_Buf(), RX0_BUF_SIZE);
 		InitQueue(&hKey->hTx_Buf, Get_TX0_Buf(), TX0_BUF_SIZE);
 		break;
-		case 1:
+	case 1:
 		// Set static global variable.
 		hSerial1 = hKey;
 		// Initialize Transmit/Receive Queue.
